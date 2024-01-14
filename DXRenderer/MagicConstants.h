@@ -9,8 +9,8 @@ static const float sc_DefaultImageMedCLL = 80.0f; // Needs more tuning based on 
 static const float sc_MaxZoom = 1.0f; // Restrict max zoom to 1:1 scale.
 static const float sc_MinZoomSphereMap = 0.25f;
 
-// 400 bins with gamma of 10 lets us measure luminance to within 10% error for any
+// n bins with gamma of 10 lets us measure luminance to within 10% error for any
 // luminance above ~1.5 nits, up to 1 million nits.
-static const unsigned int sc_histNumBins = 400;
+static const unsigned int sc_histNumBins = 1000;
 static const float        sc_histGamma = 0.1f;
 static const unsigned int sc_histMaxNits = 1000000;
