@@ -30,7 +30,7 @@ namespace DXRenderer
 
         static void GetDebugOutputStream(_Out_ IStream** fileStream);
 
-        static void ExportToSdr(_In_ ImageLoader* loader, _In_ DeviceResources* res, IStream* stream, GUID wicFormat);
+        static void ExportToSdr(_In_ ImageLoader* loader, _In_ DeviceResources* res, IStream* stream, GUID wicFormat, bool removeWrongSDRPQEncoding = false);
 
         static void ExportToDds(_In_ IWICBitmap* bitmap, _In_ IStream* stream, DXGI_FORMAT outputFmt);
 

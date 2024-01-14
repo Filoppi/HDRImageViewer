@@ -27,6 +27,7 @@ namespace DXRenderer
         SdrOverlay,
         MaxLuminance,
         LuminanceHeatmap,
+        FixBT2100SDREncode,
         SphereMap
     };
 
@@ -74,6 +75,7 @@ namespace DXRenderer
                 ref new EffectOption(L"Draw SDR as grayscale", RenderEffectKind::SdrOverlay),
                 ref new EffectOption(L"Draw out of gamut as black", RenderEffectKind::MaxLuminance),
                 ref new EffectOption(L"Luminance heatmap", RenderEffectKind::LuminanceHeatmap),
+                ref new EffectOption(L"Fix BT.2100 SDR encode", RenderEffectKind::FixBT2100SDREncode),
                 // TODO: SphereMap is not ready for release.
                 //ref new EffectOption(L"Draw as spheremap", RenderEffectKind::SphereMap)
             };

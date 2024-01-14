@@ -286,6 +286,10 @@ namespace HDRImageViewerCS
                     case RenderEffectKind.LuminanceHeatmap:
                         RenderEffectCombo.SelectedIndex = 4; // See RenderOptions.h for which value this indicates.
                         break;
+                        
+                    case RenderEffectKind.FixBT2100SDREncode:
+                        RenderEffectCombo.SelectedIndex = 5; // See RenderOptions.h for which value this indicates.
+                        break;
                 }
 
                 // Prevent manually changing the effect.
@@ -554,16 +558,18 @@ namespace HDRImageViewerCS
             if (imageInfo.imageKind == AdvancedColorKind.HighDynamicRange)
             {
                 ExportImageButton.IsEnabled = true;
+                FixSDRImageButton.IsEnabled = false;
             }
             else
             {
                 ExportImageButton.IsEnabled = false;
+                FixSDRImageButton.IsEnabled = true;
             }
 
             UpdateDefaultRenderOptions();
         }
 
-        private async Task ExportImageAsync(StorageFile file)
+        private async Task ExportImageAsync(StorageFile file, bool removeWrongSDRPQEncoding = false)
         {
             Guid wicFormat = DirectXCppConstants.GUID_ContainerFormatJpeg;
             switch (file.FileType)
@@ -583,13 +589,13 @@ namespace HDRImageViewerCS
 
             var ras = await file.OpenAsync(FileAccessMode.ReadWrite);
 
-            if (file.FileType == ".jxr")
+            if (file.FileType == ".jxr" || removeWrongSDRPQEncoding)
             {
                 renderer.ExportImageToJxr(ras);
             }
             else
             {
-                renderer.ExportImageToSdr(ras, wicFormat);
+                renderer.ExportImageToSdr(ras, wicFormat, removeWrongSDRPQEncoding);
             }
         }
 
@@ -693,6 +699,26 @@ namespace HDRImageViewerCS
             if (pickedFile != null)
             {
                 await ExportImageAsync(pickedFile);
+            }
+        }
+
+        private async void FixSDRImageButton_Click(object sender, RoutedEventArgs e)
+        {
+            var picker = new FileSavePicker
+            {
+                SuggestedStartLocation = PickerLocationId.PicturesLibrary,
+                CommitButtonText = "Fix PQ encoded SDR image"
+            };
+
+            foreach (var format in UIStrings.FILEFORMATS_SAVE)
+            {
+                picker.FileTypeChoices.Add(format);
+            }
+
+            var pickedFile = await picker.PickSaveFileAsync();
+            if (pickedFile != null)
+            {
+                await ExportImageAsync(pickedFile, true);
             }
         }
 

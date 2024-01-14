@@ -44,6 +44,9 @@
     <ClCompile Include="RenderEffects\MaxLuminanceEffect.cpp">
       <Filter>Resources\RenderEffects</Filter>
     </ClCompile>
+    <ClCompile Include="RenderEffects\FixBT2100SDREncodeEffect.cpp">
+      <Filter>Resources\RenderEffects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
@@ -82,6 +85,9 @@
     <ClInclude Include="RenderEffects\MaxLuminanceEffect.h">
       <Filter>Resources\RenderEffects</Filter>
     </ClInclude>
+    <ClInclude Include="RenderEffects\FixBT2100SDREncodeEffect.h">
+      <Filter>Resources\RenderEffects</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="RenderEffects\LuminanceHeatmapEffect.hlsl">
@@ -97,6 +103,9 @@
       <Filter>Resources\RenderEffects</Filter>
     </FxCompile>
     <FxCompile Include="RenderEffects\MaxLuminanceEffect.hlsl">
+      <Filter>Resources\RenderEffects</Filter>
+    </FxCompile>
+    <FxCompile Include="RenderEffects\FixBT2100SDREncodeEffect.hlsl">
       <Filter>Resources\RenderEffects</Filter>
     </FxCompile>
   </ItemGroup>

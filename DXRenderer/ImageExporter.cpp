@@ -79,7 +79,7 @@ void ImageExporter::GetDebugOutputStream(_Out_ IStream** fileStream)
 /// RenderEffectKind::HdrTonemap. Not yet suitable for general purpose use.
 /// </summary>
 /// <param name="wicFormat">WIC container format GUID (GUID_ContainerFormat...)</param>
-void ImageExporter::ExportToSdr(ImageLoader* loader, DeviceResources* res, IStream* stream, GUID wicFormat)
+void ImageExporter::ExportToSdr(ImageLoader* loader, DeviceResources* res, IStream* stream, GUID wicFormat, bool removeWrongSDRPQEncoding)
 {
     auto ctx = res->GetD2DDeviceContext();
 

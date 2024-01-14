@@ -13,6 +13,7 @@
 #include "RenderEffects\LuminanceHeatmapEffect.h"
 #include "RenderEffects\SphereMapEffect.h"
 #include "RenderEffects\MaxLuminanceEffect.h"
+#include "RenderEffects\FixBT2100SDREncodeEffect.h"
 #include "RenderOptions.h"
 #include "ImageLoader.h"
 #include "Matrix.h"
@@ -66,7 +67,7 @@ namespace DXRenderer
 
         ImageInfo LoadImageFromWic(_In_ Windows::Storage::Streams::IRandomAccessStream^ imageStream, ImageLoaderOptions options);
         ImageInfo LoadImageFromDirectXTex(_In_ Platform::String^ filename, _In_ Platform::String^ extension, ImageLoaderOptions options);
-        void      ExportImageToSdr(_In_ Windows::Storage::Streams::IRandomAccessStream^ outputStream, Platform::Guid wicFormat);
+        void      ExportImageToSdr(_In_ Windows::Storage::Streams::IRandomAccessStream^ outputStream, Platform::Guid wicFormat, bool removeWrongSDRPQEncoding);
         void      ExportAsDdsTest(_In_ Windows::Storage::Streams::IRandomAccessStream^ outputStream);
         void      ExportImageToJxr(_In_ Windows::Storage::Streams::IRandomAccessStream^ outputStream);
 
@@ -108,6 +109,7 @@ namespace DXRenderer
         Microsoft::WRL::ComPtr<ID2D1Effect>                     m_sdrWhiteScaleEffect;
         Microsoft::WRL::ComPtr<ID2D1Effect>                     m_hdrTonemapEffect;
         Microsoft::WRL::ComPtr<ID2D1Effect>                     m_sdrOverlayEffect;
+        Microsoft::WRL::ComPtr<ID2D1Effect>                     m_fixBT2100SDREncodeEffect;
         Microsoft::WRL::ComPtr<ID2D1Effect>                     m_heatmapEffect;
         Microsoft::WRL::ComPtr<ID2D1Effect>                     m_maxLuminanceEffect;
         Microsoft::WRL::ComPtr<ID2D1Effect>                     m_sphereMapEffect;

@@ -66,6 +66,7 @@ void HDRImageViewerRenderer::CreateDeviceIndependentResources()
     // Register the custom render effects.
     IFT(SimpleTonemapEffect::Register(fact));
     IFT(SdrOverlayEffect::Register(fact));
+    IFT(FixBT2100SDREncodeEffect::Register(fact));
     IFT(LuminanceHeatmapEffect::Register(fact));
     IFT(MaxLuminanceEffect::Register(fact));
     IFT(SphereMapEffect::Register(fact));
@@ -192,6 +193,11 @@ void HDRImageViewerRenderer::SetRenderOptions(
         m_whiteScaleEffect->SetInputEffect(0, m_sdrOverlayEffect.Get());
         break;
 
+    case RenderEffectKind::FixBT2100SDREncode:
+        m_finalOutput = m_whiteScaleEffect.Get();
+        m_whiteScaleEffect->SetInputEffect(0, m_fixBT2100SDREncodeEffect.Get());
+        break;
+
     // Effect graph: ImageSource > ColorManagement > [Optional GainMapMerge] > WhiteScale > SphereMap
     case RenderEffectKind::SphereMap:
         m_finalOutput = m_sphereMapEffect.Get();
@@ -277,12 +283,12 @@ ImageInfo HDRImageViewerRenderer::LoadImageFromDirectXTex(String ^ filename, Str
     return m_imageInfo;
 }
 
-void HDRImageViewerRenderer::ExportImageToSdr(_In_ IRandomAccessStream^ outputStream, Guid wicFormat)
+void HDRImageViewerRenderer::ExportImageToSdr(_In_ IRandomAccessStream^ outputStream, Guid wicFormat, bool removeWrongSDRPQEncoding)
 {
     ComPtr<IStream> iStream;
     IFT(CreateStreamOverRandomAccessStream(outputStream, IID_PPV_ARGS(&iStream)));
 
-    ImageExporter::ExportToSdr(m_imageLoader.get(), m_deviceResources.get(), iStream.Get(), wicFormat);
+    ImageExporter::ExportToSdr(m_imageLoader.get(), m_deviceResources.get(), iStream.Get(), wicFormat, removeWrongSDRPQEncoding);
 }
 
 // Test only. Exports to DXGI encoded DDS.
@@ -473,6 +479,7 @@ void HDRImageViewerRenderer::CreateImageDependentResources()
     IFT(context->CreateEffect(tonemapper, &m_hdrTonemapEffect));
     IFT(context->CreateEffect(CLSID_D2D1WhiteLevelAdjustment, &m_sdrWhiteScaleEffect));
     IFT(context->CreateEffect(CLSID_CustomSdrOverlayEffect, &m_sdrOverlayEffect));
+    IFT(context->CreateEffect(CLSID_CustomFixBT2100SDREncodeEffect, &m_fixBT2100SDREncodeEffect));
     IFT(context->CreateEffect(CLSID_CustomLuminanceHeatmapEffect, &m_heatmapEffect));
     IFT(context->CreateEffect(CLSID_CustomMaxLuminanceEffect, &m_maxLuminanceEffect));
     IFT(context->CreateEffect(CLSID_CustomSphereMapEffect, &m_sphereMapEffect));
@@ -490,6 +497,7 @@ void HDRImageViewerRenderer::CreateImageDependentResources()
     border->SetInputEffect(0, m_whiteScaleEffect.Get());
 
     m_hdrTonemapEffect->SetInputEffect(0, m_whiteScaleEffect.Get());
+    //m_fixBT2100SDREncodeEffect->SetInputEffect(0, m_whiteScaleEffect.Get()); //TODOFT
     m_sphereMapEffect->SetInputEffect(0, border.Get());
 
     // SphereMap needs to know the pixel size of the image.
@@ -611,6 +619,7 @@ void HDRImageViewerRenderer::ReleaseImageDependentResources()
     m_sdrWhiteScaleEffect.Reset();
     m_hdrTonemapEffect.Reset();
     m_sdrOverlayEffect.Reset();
+    m_fixBT2100SDREncodeEffect.Reset();
     m_heatmapEffect.Reset();
     m_maxLuminanceEffect.Reset();
 #if 0
